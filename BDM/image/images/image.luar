@@ -1,0 +1,5 @@
+image = {
+	Dark_Energy_region = Region(445, 613, 207, 92),
+	Auto_Fusion_region = Region(941, 626, 188, 95),
+	Fuse_Lighstone_region = Region(0, 479, 239, 88),
+}
