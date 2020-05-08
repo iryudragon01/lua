@@ -65,11 +65,10 @@ function BuyItem(location)
     toast("Buy item")
     click(location)
     wait(2)
-    click(Location(591,425))
     click(Location(591,460))
     wait(30)
     click(SearchClick(Region(1034, 479, 200, 200),"item_shop.png",0.6))
-    click("Sell_Junk.png")
+    click(Location(1181,670))
     click("exit.png")
     click(Location(232, 136))   ----- home btn
     click(Location(840, 361))   ----- farm location 1
@@ -132,31 +131,34 @@ function UltimateSkill()
     click(Location(1231,463))
     wait(2)
 end
--- ==========  main program ==========
-for k=1,999,1 do
-    UseSkill()
-    BlackSpirit()
-    for j=1,5,1 do
-        Settings:set("MinSimilarity", 0.9)
-        reg = Region(526, 593, 130, 70)
-        test2 = regionFindAllNoFindException(reg,("full_weight.png"))
-        for i, m in ipairs(test2) do
-            BuyItem(m)
+-------------   check bag ------------
+function BagFull(pic,minsimi)
+    reg = Region(526, 593, 130, 70)
+    Settings:set("MinSimilarity", minsimi)
+    for i=1,5,1 do
+        tablelocate = regionFindAllNoFindException(reg,pic)
+        for i, m in ipairs(tablelocate) do
+            return m
         end
-        wait(5)
+        return "not found"
     end
-    RepeatativeQuest()
-    PetFeeds()
-    UltimateSkill()
-    wait(300)
+    wait(5)
+
 end
-
-
-
-
-
-
-
-
-
-
+    -- ==========  main program ==========
+        for k=1,200,1 do
+            amount= BagFull("full_amount.png",0.9)
+            if amount=="not found" then
+                toast("not found")
+            else
+                UseSkill()
+                BlackSpirit()
+            end
+            weight= BagFull("full_weight.png",0.9)
+            if weight=="not found" then
+                toast("not found")
+            else
+                BuyItem(weight)
+            end
+            wait(60)
+        end
