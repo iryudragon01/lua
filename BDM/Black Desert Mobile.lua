@@ -34,7 +34,7 @@ function UseSkill ()
     click("Skill_training.png")
     click("Use_Skillbooks.png")
     wait(1)
-    click("exit.png")
+    click(Location(1236,28))
     return
 end
 
@@ -48,7 +48,7 @@ function PetFeeds()
     click(Location(482, 683))   -----pet feeds
     click(Location(1174, 336))  -----pet 3
     click(Location(482, 683))   -----pet feeds
-    click("exit.png")
+    click(Location(1236,28))
     wait(2)
 
 end
@@ -65,14 +65,19 @@ function BuyItem(location)
     toast("Buy item")
     click(location)
     wait(2)
-    click(Location(591,460))
-    wait(30)
-    click(SearchClick(Region(1034, 479, 200, 200),"item_shop.png",0.6))
-    click(Location(1181,670))
-    click("exit.png")
-    click(Location(232, 136))   ----- home btn
-    click(Location(840, 361))   ----- farm location 1
-    wait(60)
+    local r,g,b = getColor(Location(591,460))
+    if(r==53 and g==68 and b==99) then   ------if equal then goto town
+        click(Location(591,460))
+        wait(30)
+        click(SearchClick(Region(1034, 479, 200, 200),"item_shop.png",0.6))
+        click(Location(1181,670))
+        click(Location(1236,28))
+        click(Location(232, 136))   ----- home btn
+        click(Location(840, 361))   ----- farm location 1
+        wait(60)
+        else
+        click(location)
+    end
 
 end
 --------------- black spirit----------
@@ -97,12 +102,12 @@ function BlackSpirit()
     click(Location(746,417))   ----- Unique btn
     click(Location(706,505))   ----- confirm btn
     wait(2)
-    click("exit.png")
+    click(Location(1236,28))
 end
 --------------- Repeatative Quese ----
 function RepeatativeQuest()
     toast("Repeatative quest")
-    click(Location(1121,240))
+    click(Location(1121,210))
     click(Location(1121,240))
     click(Location(1121,240))
     click(Location(1121,240))
@@ -145,20 +150,44 @@ function BagFull(pic,minsimi)
     wait(5)
 
 end
-    -- ==========  main program ==========
-        for k=1,200,1 do
-            amount= BagFull("full_amount.png",0.9)
-            if amount=="not found" then
-                toast("not found")
-            else
-                UseSkill()
-                BlackSpirit()
+---------------------------- loopcheck--------
+function loopcheck()
+    for j=1,5,1 do
+        for i=0,7,1 do
+            local r,g,b = getColor(Location(538+i*27,612))
+            if(r>120 and g <100 and b <100) then
+                return Location((538+i*27),612)
             end
-            weight= BagFull("full_weight.png",0.9)
-            if weight=="not found" then
-                toast("not found")
-            else
-                BuyItem(weight)
-            end
-            wait(60)
+            wait(1)
         end
+    end
+    return 0
+end
+
+    -- ==========  main program ==========
+for j=1,555,1 do
+    for i=1,20,1 do
+        wait(5)
+        local r,g,b = getColor(Location(1273,197))
+        print(r..g..b)
+        if(r>90 and g>10 and b<100) then
+            RepeatativeQuest()
+        end
+
+        wait(5)
+        local loc = loopcheck()
+        if (loc ~= 0) then
+            UseSkill()
+            BlackSpirit()
+            end
+        wait(5)
+        loc = loopcheck()
+        if (loc ~= 0) then
+            BuyItem(loc)
+        end
+        wait(300)
+    end
+    wait(5)
+    PetFeeds()
+end
+
