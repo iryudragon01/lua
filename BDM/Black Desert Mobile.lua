@@ -31,8 +31,8 @@ function UseSkill ()
     click(Location(1201,677))
     click(Location(699,476))
     wait(2)
-    click("Skill_training.png")
-    click("Use_Skillbooks.png")
+    click(Location(1190,86))
+    click(Location(873,483))
     wait(1)
     click(Location(1236,28))
     return
@@ -64,12 +64,17 @@ end
 function BuyItem(location)
     toast("Buy item")
     click(location)
+   -- existsClick("Go_to_Town.png")
     wait(2)
-    local r,g,b = getColor(Location(591,460))
-    if(r==53 and g==68 and b==99) then   ------if equal then goto town
+    local r,g,b = getColor(Location(556,446))
+    wait(2)
+    local r1,g1,b1 = getColor(Location(556,446))
+    if(r==r1 and g==g1 and b==b1) then   ------if equal then goto town
         click(Location(591,460))
         wait(30)
-        click(SearchClick(Region(1034, 479, 200, 200),"item_shop.png",0.6))
+        click(Location(1097,530))
+        wait(1)
+        click(Location(1204,530))
         click(Location(1181,670))
         click(Location(1236,28))
         click(Location(232, 136))   ----- home btn
@@ -105,13 +110,17 @@ function BlackSpirit()
     click(Location(1236,28))
 end
 --------------- Repeatative Quese ----
-function RepeatativeQuest()
+function RepeatativeQuest(location)
     toast("Repeatative quest")
-    click(Location(1121,210))
-    click(Location(1121,240))
-    click(Location(1121,240))
-    click(Location(1121,240))
-    click(Location(1121,240))
+    click(location)
+    click(location)
+    click(location)
+    click(Location(826,673))
+    click(Location(826,673))
+    click(Location(702,520))    ----- Accept
+    click(location)
+    click(location)
+    click(location)
     click(Location(924,674))
     click(Location(702,520))    ----- Accept
     click(Location(882,281))    ----- Accept
@@ -153,10 +162,17 @@ end
 ---------------------------- loopcheck--------
 function loopcheck()
     for j=1,5,1 do
-        for i=0,7,1 do
-            local r,g,b = getColor(Location(538+i*27,612))
-            if(r>120 and g <100 and b <100) then
-                return Location((538+i*27),612)
+        for i=0,8,1 do
+            local r1,g1,b1 = getColor(Location(511+i*27,612))
+            local r2,g2,b2 = getColor(Location(511+i*27,612))
+            local r3,g3,b3 = getColor(Location(511+i*27,612))
+            local r4,g4,b4 = getColor(Location(511+i*27,612))
+            local r5,g5,b5 = getColor(Location(511+i*27,612))
+            local r=(r1+r2+r3+r4+r5)/5
+            local g=(g1+g2+g3+g4+g5)/5
+            local b=(b1+b2+b3+b4+b5)/5
+            if(r>170 and g <100 and b <100) then
+                return Location((511+i*27),612)
             end
             wait(1)
         end
@@ -164,19 +180,24 @@ function loopcheck()
     return 0
 end
 
+-------------------checkRepeatative
+function checkRepeatative()
+    local r,g,b = getColor(Location(1273,197))
+    if(r>100 and r>b) then
+        RepeatativeQuest(Location(1203,197))
+        return
+    end
+end
     -- ==========  main program ==========
+
 for j=1,555,1 do
     for i=1,20,1 do
         wait(5)
-        local r,g,b = getColor(Location(1273,197))
-        print(r..g..b)
-        if(r>90 and g>10 and b<100) then
-            RepeatativeQuest()
-        end
-
+        checkRepeatative()
         wait(5)
         local loc = loopcheck()
         if (loc ~= 0) then
+
             UseSkill()
             BlackSpirit()
             end
@@ -185,7 +206,10 @@ for j=1,555,1 do
         if (loc ~= 0) then
             BuyItem(loc)
         end
-        wait(300)
+        UltimateSkill()
+        existsClick("exit.png",10)
+        existsClick("closeBTN.png",10)
+        wait(60)
     end
     wait(5)
     PetFeeds()
